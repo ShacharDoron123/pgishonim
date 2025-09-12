@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exit Approval</title>
+  <style>
+    body {
+      background-color: #2844a4;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #333;
+      direction: rtl;
+    }
+    .approval-container {
+      width: calc(100% - 20px);
+      margin: 15px auto;
+      padding: 20px;
+      background-color: #dde4f7;
+      border-radius: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-sizing: border-box;
+      position: relative;
+    }
+    .content {
+      width: 100%;
+      margin: 0 auto;
+      padding: 10px 15px;
+      box-sizing: border-box;
+    }
+    .language-box {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 5px;
+      flex-direction: row;
+    }
+    .language-box img { height: 24px; width: auto; }
+    .language-box h2 { font-size: 14px; margin: 0; }
+    .home-icon { position: absolute; top: 0; right: 0; height: 24px; width: auto; padding: 5px; }
+    .h1h { text-align: center; font-size: 15px; }
+    .details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+      margin: 50px 0 10px 0;
+      font-size: 16px;
+      font-weight: bold;
+      align-items: center;
+    }
+    .details h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    #status-info { display: flex; justify-content: space-between; align-items: center; }
+    .name-class-row {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .student-name { flex-grow: 1; text-align: right; overflow: visible; white-space: nowrap; }
+    .student-class { flex-shrink: 0; margin-left: 10px; white-space: nowrap; }
+    .full-width-center { grid-column: 1 / -1; text-align: center; margin: 10px 0; }
+    .status { background-color: #028851; color: white; padding: 5px 12px; border-radius: 8px; font-size: 14px; display: inline-block; }
+    .cta { text-align: center; margin: 25px 0; }
+    .cta button {
+      background: linear-gradient(90deg, #01dbdd, #193ea7);
+      color: white;
+      font-size: 18px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 320px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    left{
+       text-align: left;
+    }
+    .approval { text-align: center; margin-top: 25px; }
+    .approval img { max-width: 100%; width: 120px; height: auto; margin: 10px 0; }
+    .approval h2 { font-size: 16px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <!-- דף התחברות -->
+  <div id="clock-container" class="approval-container" style="max-width: 400px; text-align: center;">
+    <div class="content">
+      <h1>התחברות משתמש</h1>
+      <input type="text" id="username-input" placeholder="שם משתמש"><br>
+      <input type="password" id="clock-input" placeholder="קוד">
+      <div class="cta" style="margin-top: 20px;">
+        <button id="clock-submit">התחבר</button>
+      </div>
+      <p id="error-msg" style="color: red; display: none;">שם משתמש או קוד שגויים</p>
+    </div>
+    <a href="./TermsOfUse.html">תנאי שימוש</a>
+  </div>
+
+  <!-- טופס פרטי תלמיד -->
+  <div id="form-container" class="approval-container" style="display: none;">
+    <div class="content">
+      <h1 style="text-align: center;">הכנס פרטי תלמיד</h1>
+      <form id="student-form">
+        <div class="details">
+          <label for="student-name"><h2>שם התלמיד:</h2></label>
+          <input type="text" id="student-name" required>
+        </div>
+        <div class="details">
+          <label for="student-class"><h2>כיתה:</h2></label>
+          <input type="text" id="student-class" required>
+        </div>
+        <div class="cta">
+          <button type="submit">המשך</button>
+          <p>בלחיצה על הכפתור אתם מאשרים את תנאי שימוש</p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- דף האישור -->
+  <div id="main-content" class="approval-container" style="display: none;">
+    <div class="content">
+      <div class="language-box">
+        <h2>שפה:</h2>
+        <img src="./flag.png" alt="Language">
+      </div>
+      <img class="home-icon" src="./home.png" alt="Home">
+      <h1 class="h1h">הדפסת אישור יציאה</h1>
+      <div class="details">
+        <h2 id="current-date">תאריך:</h2>
+        <h2 id="release-time">שעת השחרור:</h2>
+        <div class="name-class-row">
+          <h2 class="student-name" id="student-name-display">שם התלמיד:</h2>
+          <h2 class="student-class" id="student-class-display">כיתה:</h2>
+        </div>
+        <div class="full-width-center">
+          <h2 class="left">סיבה: חלון</h2>
+        </div>
+        <h2 id="cycle-info">מחזוריות: חד פעמי</h2>
+        <h2 id="status-info">סטטוס: <span class="status">אושר</span></h2>
+        <h2>שעת חזרה: 00:00</h2>
+        <h2>שעת יציאה: 00:00</h2>
+      </div>
+      <div class="cta">
+        <button>‎עדכון יציאה מבית הספר!</button>
+      </div>
+      <div class="approval">
+        <img src="./checkmarkA.png" alt="Approved" style="width:150%; height:auto;">
+        <h2>אושר על ידי: מחנכת כיתה</h2>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const USERS = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS1 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS2 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS3 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS4 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS5 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS6 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS7 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS8 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS9 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERS10 = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERSAA = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERSF = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+      const USERSR = [
+        { username: "admin", code: "1234" },
+        { username: "teacher", code: "9999" }
+      ];
+
+      const clockContainer = document.getElementById('clock-container');
+      const formContainer = document.getElementById('form-container');
+      const mainContent = document.getElementById('main-content');
+      const usernameInput = document.getElementById('username-input');
+      const clockInput = document.getElementById('clock-input');
+      const clockSubmit = document.getElementById('clock-submit');
+      const errorMsg = document.getElementById('error-msg');
+
+      clockSubmit.addEventListener('click', function () {
+        const username = usernameInput.value.trim();
+        const enteredCode = clockInput.value.trim();
+
+        const user = USERS.find(u => u.username === username && u.code === enteredCode);
+        if (user) {
+          clockContainer.style.display = 'none';
+          formContainer.style.display = 'block';
+          errorMsg.style.display = 'none';
+        } else {
+          errorMsg.style.display = 'block';
+          clockInput.value = '';
+          clockInput.focus();
+        }
+      });
+
+      clockInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); clockSubmit.click(); }
+      });
+
+      const form = document.getElementById('student-form');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('student-name').value.trim();
+        const className = document.getElementById('student-class').value.trim();
+        if (name && className) {
+          const now = new Date();
+          const year = now.getFullYear().toString().slice(2);
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const day = String(now.getDate()).padStart(2, '0');
+          const hour = String(now.getHours()).padStart(2, '0');
+          const minutes = String(now.getMinutes()).padStart(2, '0');
+          document.getElementById('student-name-display').textContent = `שם התלמיד: ${name}`;
+          document.getElementById('student-class-display').textContent = `כיתה: ${className}`;
+          document.getElementById('current-date').textContent = `תאריך: ${day}/${month}/${year}`;
+          document.getElementById('release-time').textContent = `שעת השחרור: ${hour}:${minutes}`;
+          formContainer.style.display = 'none';
+          mainContent.style.display = 'block';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
