@@ -1,4 +1,4 @@
-const users = [
-  { username: "admin", password: "1234" },
-  { username: "gal", password: "abcd" }
+const USERS  = [
+  { username: "שחר דורון", code: "1234" },
+  { username: "אלון להביא", code: "abcd" }
 ];
