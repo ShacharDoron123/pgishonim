@@ -160,114 +160,93 @@
     </div>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const USERS = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS1 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS2 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS3 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS4 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS5 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS6 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS7 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS8 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS9 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERS10 = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERSAA = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERSF = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
-      const USERSR = [
-        { username: "admin", code: "1234" },
-        { username: "teacher", code: "9999" }
-      ];
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const USERS = [
+      { username: "admin", code: "1234" },
+      { username: "teacher", code: "9999" }
+    ];
 
-      const clockContainer = document.getElementById('clock-container');
-      const formContainer = document.getElementById('form-container');
-      const mainContent = document.getElementById('main-content');
-      const usernameInput = document.getElementById('username-input');
-      const clockInput = document.getElementById('clock-input');
-      const clockSubmit = document.getElementById('clock-submit');
-      const errorMsg = document.getElementById('error-msg');
+    const clockContainer = document.getElementById('clock-container');
+    const formContainer = document.getElementById('form-container');
+    const mainContent = document.getElementById('main-content');
+    const usernameInput = document.getElementById('username-input');
+    const clockInput = document.getElementById('clock-input');
+    const clockSubmit = document.getElementById('clock-submit');
+    const errorMsg = document.getElementById('error-msg');
 
-      clockSubmit.addEventListener('click', function () {
-        const username = usernameInput.value.trim();
-        const enteredCode = clockInput.value.trim();
+    // בדיקה אם המשתמש כבר מחובר
+    const loggedIn = localStorage.getItem('loggedInUser');
+    if (loggedIn) {
+      // המשתמש כבר מחובר
+      clockContainer.style.display = 'none';
+      formContainer.style.display = 'block';
+      errorMsg.style.display = 'none';
+    }
 
-        const user = USERS.find(u => u.username === username && u.code === enteredCode);
-        if (user) {
-          clockContainer.style.display = 'none';
-          formContainer.style.display = 'block';
-          errorMsg.style.display = 'none';
-        } else {
-          errorMsg.style.display = 'block';
-          clockInput.value = '';
-          clockInput.focus();
-        }
-      });
+    clockSubmit.addEventListener('click', function () {
+      const username = usernameInput.value.trim();
+      const enteredCode = clockInput.value.trim();
 
-      clockInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { e.preventDefault(); clockSubmit.click(); }
-      });
+      const user = USERS.find(u => u.username === username && u.code === enteredCode);
+      if (user) {
+        // שמירת מצב התחברות ב-localStorage
+        localStorage.setItem('loggedInUser', JSON.stringify({ username: user.username }));
 
-      const form = document.getElementById('student-form');
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const name = document.getElementById('student-name').value.trim();
-        const className = document.getElementById('student-class').value.trim();
-        if (name && className) {
-          const now = new Date();
-          const year = now.getFullYear().toString().slice(2);
-          const month = String(now.getMonth() + 1).padStart(2, '0');
-          const day = String(now.getDate()).padStart(2, '0');
-          const hour = String(now.getHours()).padStart(2, '0');
-          const minutes = String(now.getMinutes()).padStart(2, '0');
-          document.getElementById('student-name-display').textContent = `שם התלמיד: ${name}`;
-          document.getElementById('student-class-display').textContent = `כיתה: ${className}`;
-          document.getElementById('current-date').textContent = `תאריך: ${day}/${month}/${year}`;
-          document.getElementById('release-time').textContent = `שעת השחרור: ${hour}:${minutes}`;
-          formContainer.style.display = 'none';
-          mainContent.style.display = 'block';
-        }
-      });
+        clockContainer.style.display = 'none';
+        formContainer.style.display = 'block';
+        errorMsg.style.display = 'none';
+      } else {
+        errorMsg.style.display = 'block';
+        clockInput.value = '';
+        clockInput.focus();
+      }
     });
-  </script>
+
+    clockInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); clockSubmit.click(); }
+    });
+
+    const form = document.getElementById('student-form');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('student-name').value.trim();
+      const className = document.getElementById('student-class').value.trim();
+      if (name && className) {
+        const now = new Date();
+        const year = now.getFullYear().toString().slice(2);
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hour = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        document.getElementById('student-name-display').textContent = `שם התלמיד: ${name}`;
+        document.getElementById('student-class-display').textContent = `כיתה: ${className}`;
+        document.getElementById('current-date').textContent = `תאריך: ${day}/${month}/${year}`;
+        document.getElementById('release-time').textContent = `שעת השחרור: ${hour}:${minutes}`;
+
+        // שמירת פרטי התלמיד ב-localStorage כדי לשמור מצב מלא
+        localStorage.setItem('studentInfo', JSON.stringify({ name, className }));
+
+        formContainer.style.display = 'none';
+        mainContent.style.display = 'block';
+      }
+    });
+
+    // במידה וכבר קיימים פרטי תלמיד ב-localStorage, נטען אותם אוטומטית
+    const savedStudent = JSON.parse(localStorage.getItem('studentInfo'));
+    if (savedStudent) {
+      document.getElementById('student-name-display').textContent = `שם התלמיד: ${savedStudent.name}`;
+      document.getElementById('student-class-display').textContent = `כיתה: ${savedStudent.className}`;
+
+      // הצגת תוכן הדף הראשי במקום הטופס
+      clockContainer.style.display = 'none';
+      formContainer.style.display = 'none';
+      mainContent.style.display = 'block';
+    }
+
+  });
+</script>
 </body>
 </html>
+
